@@ -48,19 +48,28 @@ if (contactForm) {
   contactForm.addEventListener("submit", (event) => {
     event.preventDefault();
 
-    const nameInput = contactForm.querySelector('input[name="name"], #name, input[type="text"]');
-    const userName = nameInput && nameInput.value.trim() ? nameInput.value.trim() : "Оқырман";
+    const nameField = contactForm.querySelector('input[type="text"], input[name="name"], #name');
+    const topicField = contactForm.querySelector("select");
+
+    const nameValue = nameField && nameField.value.trim() ? nameField.value.trim() : "Оқырман";
+    const topicValue =
+      topicField && topicField.selectedIndex > 0
+        ? ` («${topicField.options[topicField.selectedIndex].text.trim()}»)`
+        : "";
 
     let statusEl = document.getElementById("formStatus");
     if (!statusEl) {
       statusEl = document.createElement("p");
       statusEl.id = "formStatus";
-      statusEl.style.marginTop = "12px";
+      statusEl.style.marginTop = "14px";
+      statusEl.style.padding = "10px 12px";
+      statusEl.style.borderRadius = "6px";
+      statusEl.style.backgroundColor = "#eef4f0";
       statusEl.style.fontWeight = "600";
       contactForm.insertAdjacentElement("afterend", statusEl);
     }
 
-    statusEl.textContent = `${userName}, хабарламаңыз сәтті қабылданды! Жақын арада жауап береміз.`;
+    statusEl.textContent = `${nameValue}, хабарламаңыз${topicValue} сәтті қабылданды! Жақын арада жауап береміз.`;
     contactForm.reset();
   });
 }
