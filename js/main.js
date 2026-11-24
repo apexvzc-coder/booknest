@@ -61,36 +61,6 @@ if (searchInput && tableRows.length > 0) {
   searchInput.addEventListener("keyup", filterBooks);
   filterBooks();
 }
-const contactForm = document.querySelector("form");
-if (contactForm) {
-  contactForm.addEventListener("submit", (event) => {
-    event.preventDefault();
-
-    const nameField = contactForm.querySelector('input[type="text"], input[name="name"], #name');
-    const topicField = contactForm.querySelector("select");
-
-    const nameValue = nameField && nameField.value.trim() ? nameField.value.trim() : "Оқырман";
-    const topicValue =
-      topicField && topicField.selectedIndex > 0
-        ? ` («${topicField.options[topicField.selectedIndex].text.trim()}»)`
-        : "";
-
-    let statusEl = document.getElementById("formStatus");
-    if (!statusEl) {
-      statusEl = document.createElement("p");
-      statusEl.id = "formStatus";
-      statusEl.style.marginTop = "14px";
-      statusEl.style.padding = "10px 12px";
-      statusEl.style.borderRadius = "6px";
-      statusEl.style.backgroundColor = "#eef4f0";
-      statusEl.style.fontWeight = "600";
-      contactForm.insertAdjacentElement("afterend", statusEl);
-    }
-
-    statusEl.textContent = `${nameValue}, хабарламаңыз${topicValue} сәтті қабылданды! Жақын арада жауап береміз.`;
-    contactForm.reset();
-  });
-}
 // 3-кезең: Кітаптар кестесін бағандар бойынша сұрыптау
   const booksTable = document.querySelector(".books-table");
   const tableHeaders = booksTable ? Array.from(booksTable.querySelectorAll("thead th")) : [];
@@ -138,7 +108,7 @@ if (contactForm) {
       }
     });
   });
-  // 3-кезең: Оқу клубы бетінде қатысуға дайындықты белгілеу
+// 3-кезең: Оқу клубы бетінде қатысуға дайындықты белгілеу
   const rulesList = document.querySelector(".rules-list");
   if (rulesList && !document.getElementById("clubConfirmBtn")) {
     const confirmBtn = document.createElement("button");
@@ -167,4 +137,47 @@ if (contactForm) {
       statusMsg.textContent = "Клуб ережесі расталды — сенбілік кездесуге дайынсыз!";
     });
   }
-});
+  const contactForm = document.querySelector(".contact-form");
+  if (contactForm) {
+    let statusEl = document.getElementById("contactFormStatus");
+    if (!statusEl) {
+      statusEl = document.createElement("p");
+      statusEl.id = "contactFormStatus";
+      statusEl.style.marginTop = "12px";
+      statusEl.style.padding = "10px 14px";
+      statusEl.style.borderRadius = "6px";
+      statusEl.style.fontWeight = "600";
+      contactForm.insertAdjacentElement("afterend", statusEl);
+    }
+
+    contactForm.addEventListener("submit", (event) => {
+      event.preventDefault();
+
+      const nameInput = document.getElementById("name");
+      const emailInput = document.getElementById("email");
+      const topicSelect = document.getElementById("topic");
+      const messageInput = document.getElementById("message");
+
+      const nameValue = nameInput ? nameInput.value.trim() : "";
+      const emailValue = emailInput ? emailInput.value.trim() : "";
+      const topicValue = topicSelect ? topicSelect.value : "";
+      const topicLabel =
+        topicSelect && topicSelect.selectedIndex > 0
+          ? topicSelect.options[topicSelect.selectedIndex].textContent.trim()
+          : "";
+      const messageValue = messageInput ? messageInput.value.trim() : "";
+
+      if (!nameValue || !emailValue || !topicValue || !messageValue) {
+        statusEl.textContent = "Барлық міндетті өрісті толтырып, тақырыпты таңдаңыз.";
+        statusEl.style.backgroundColor = "#fdecea";
+        statusEl.style.color = "#8a1c1c";
+        return;
+      }
+
+      statusEl.textContent = `${nameValue}, «${topicLabel}» бойынша хабарламаңыз қабылданды (${emailValue}). Жақын арада хабарласамыз!`;
+      statusEl.style.backgroundColor = "#eef4f0";
+      statusEl.style.color = "#1f4d36";
+      contactForm.reset();
+    });
+  }
+}); 
