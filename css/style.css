@@ -388,14 +388,16 @@ p { margin-bottom: 1rem; }
 }
 
 .books-table {
+  min-width: 520px;
   width: 100%;
   border-collapse: collapse;
 }
 
 .books-table th,
 .books-table td {
-  padding: 12px 14px;
-  text-align: left;
+  padding: 8px 6px;
+  font-size: 12px;
+  white-space: nowrap;
 }
 
 @media (max-width: 768px) {
