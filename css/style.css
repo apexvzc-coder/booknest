@@ -416,3 +416,48 @@ p { margin-bottom: 1rem; }
     gap: 16px;
   }
 }
+/* 2-кезең: Карточкалар сетін (Grid / Flex) біркелкі реттеу */
+.cards-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 20px;
+  align-items: stretch;
+}
+
+.flex-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  align-items: stretch;
+}
+
+.flex-row > * {
+  flex: 1 1 260px;
+}
+
+.cards-grid > *,
+.flex-row > * {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+@media (max-width: 900px) {
+  .cards-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 768px) {
+  .cards-grid,
+  .flex-row {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .flex-row > * {
+    flex: none;
+    width: 100%;
+  }
+}
