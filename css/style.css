@@ -380,3 +380,37 @@ p { margin-bottom: 1rem; }
     line-height: 1.25;
   }
 }
+/* 2-кезең: Кесте (books-table) және бет құрылымының адаптивтілігі */
+.table-wrapper {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.books-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.books-table th,
+.books-table td {
+  padding: 12px 14px;
+  text-align: left;
+}
+
+@media (max-width: 768px) {
+  .books-table th,
+  .books-table td {
+    padding: 10px 8px;
+    font-size: 13px;
+    white-space: nowrap;
+  }
+}
+@media (max-width: 768px) {
+  .cards-grid,
+  .flex-row {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+}
