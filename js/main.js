@@ -35,6 +35,24 @@ if (searchInput && tableRows.length > 0) {
       row.style.display = matches ? "" : "none";
       if (matches) visibleCount += 1;
     });
+    if (searchInput && !document.getElementById("clearSearchBtn")) {
+    const clearBtn = document.createElement("button");
+    clearBtn.type = "button";
+    clearBtn.id = "clearSearchBtn";
+    clearBtn.textContent = "Тазарту";
+    clearBtn.style.marginTop = "8px";
+    clearBtn.style.padding = "6px 12px";
+    clearBtn.style.cursor = "pointer";
+
+    searchInput.insertAdjacentElement("afterend", clearBtn);
+
+    clearBtn.addEventListener("click", () => {
+      searchInput.value = "";
+      localStorage.removeItem("booknestSearchQuery");
+      filterBooks();
+      searchInput.focus();
+    });
+  }
 
     emptyMessage.style.display = visibleCount === 0 ? "block" : "none";
   };
