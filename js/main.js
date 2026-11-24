@@ -1,24 +1,48 @@
 // BookNest — 2-кезең: алғашқы JavaScript интерактивтілігі
 document.addEventListener("DOMContentLoaded", () => {
   const searchInput =
-    document.getElementById("bookSearch") ||
-    document.querySelector('input[type="search"]');
-  const tableRows = document.querySelectorAll(".books-table tbody tr");
+  document.getElementById("bookSearch") ||
+  document.querySelector('input[type="search"]');
+const tableRows = Array.from(
+  document.querySelectorAll(".books-table tbody tr")
+);
 
-  if (!searchInput || tableRows.length === 0) return;
+if (searchInput && tableRows.length > 0) {
+  const emptyMessage = document.createElement("p");
+  emptyMessage.id = "emptySearchMessage";
+  emptyMessage.textContent = "Мұндай кітап табылмады.";
+  emptyMessage.style.display = "none";
+  emptyMessage.style.marginTop = "12px";
+
+  const tableWrapper = document.querySelector(".table-wrapper");
+  if (tableWrapper && !document.getElementById("emptySearchMessage")) {
+    tableWrapper.insertAdjacentElement("afterend", emptyMessage);
+  }
+
+  const savedQuery = localStorage.getItem("booknestSearchQuery");
+  if (savedQuery) {
+    searchInput.value = savedQuery;
+  }
 
   const filterBooks = () => {
     const query = searchInput.value.trim().toLowerCase();
+    localStorage.setItem("booknestSearchQuery", searchInput.value);
 
+    let visibleCount = 0;
     tableRows.forEach((row) => {
       const text = row.textContent.toLowerCase();
-      row.style.display = text.includes(query) ? "" : "none";
+      const matches = text.includes(query);
+      row.style.display = matches ? "" : "none";
+      if (matches) visibleCount += 1;
     });
+
+    emptyMessage.style.display = visibleCount === 0 ? "block" : "none";
   };
 
   searchInput.addEventListener("input", filterBooks);
   searchInput.addEventListener("keyup", filterBooks);
-});
+  filterBooks();
+}
 const contactForm = document.querySelector("form");
 if (contactForm) {
   contactForm.addEventListener("submit", (event) => {
@@ -66,3 +90,4 @@ const updateRowsVisibility = () => {
 };
 
 updateRowsVisibility();
+});
