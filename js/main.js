@@ -19,3 +19,18 @@ document.addEventListener("DOMContentLoaded", () => {
   searchInput.addEventListener("input", filterBooks);
   searchInput.addEventListener("keyup", filterBooks);
 });
+const contactForm = document.querySelector("form");
+if (contactForm) {
+  contactForm.addEventListener("submit", (event) => {
+    event.preventDefault();
+    let statusEl = document.getElementById("formStatus");
+    if (!statusEl) {
+      statusEl = document.createElement("p");
+      statusEl.id = "formStatus";
+      statusEl.style.marginTop = "12px";
+      contactForm.insertAdjacentElement("afterend", statusEl);
+    }
+    statusEl.textContent = "Хабарламаңыз сәтті қабылданды! Жақын арада жауап береміз.";
+    contactForm.reset();
+  });
+}
