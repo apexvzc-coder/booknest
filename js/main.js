@@ -47,14 +47,20 @@ const contactForm = document.querySelector("form");
 if (contactForm) {
   contactForm.addEventListener("submit", (event) => {
     event.preventDefault();
+
+    const nameInput = contactForm.querySelector('input[name="name"], #name, input[type="text"]');
+    const userName = nameInput && nameInput.value.trim() ? nameInput.value.trim() : "Оқырман";
+
     let statusEl = document.getElementById("formStatus");
     if (!statusEl) {
       statusEl = document.createElement("p");
       statusEl.id = "formStatus";
       statusEl.style.marginTop = "12px";
+      statusEl.style.fontWeight = "600";
       contactForm.insertAdjacentElement("afterend", statusEl);
     }
-    statusEl.textContent = "Хабарламаңыз сәтті қабылданды! Жақын арада жауап береміз.";
+
+    statusEl.textContent = `${userName}, хабарламаңыз сәтті қабылданды! Жақын арада жауап береміз.`;
     contactForm.reset();
   });
 }
@@ -87,6 +93,9 @@ const updateRowsVisibility = () => {
   });
 
   emptyMessage.style.display = visibleCount === 0 ? "block" : "none";
+  emptyMessage.style.padding = "10px 12px";
+  emptyMessage.style.borderRadius = "6px";
+  emptyMessage.style.backgroundColor = "#f4f6f5";
 };
 
 updateRowsVisibility();
