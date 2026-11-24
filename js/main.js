@@ -138,4 +138,33 @@ if (contactForm) {
       }
     });
   });
+  // 3-кезең: Оқу клубы бетінде қатысуға дайындықты белгілеу
+  const rulesList = document.querySelector(".rules-list");
+  if (rulesList && !document.getElementById("clubConfirmBtn")) {
+    const confirmBtn = document.createElement("button");
+    confirmBtn.type = "button";
+    confirmBtn.id = "clubConfirmBtn";
+    confirmBtn.textContent = "Клуб ережесімен таныстым";
+    confirmBtn.style.marginTop = "14px";
+    confirmBtn.style.padding = "10px 16px";
+    confirmBtn.style.cursor = "pointer";
+
+    const statusMsg = document.createElement("p");
+    statusMsg.id = "clubConfirmStatus";
+    statusMsg.style.marginTop = "10px";
+    statusMsg.style.fontWeight = "600";
+
+    const isConfirmed = localStorage.getItem("booknestClubRulesAccepted") === "true";
+    if (isConfirmed) {
+      statusMsg.textContent = "Клуб ережесі расталды — сенбілік кездесуге дайынсыз!";
+    }
+
+    rulesList.insertAdjacentElement("afterend", confirmBtn);
+    confirmBtn.insertAdjacentElement("afterend", statusMsg);
+
+    confirmBtn.addEventListener("click", () => {
+      localStorage.setItem("booknestClubRulesAccepted", "true");
+      statusMsg.textContent = "Клуб ережесі расталды — сенбілік кездесуге дайынсыз!";
+    });
+  }
 });
