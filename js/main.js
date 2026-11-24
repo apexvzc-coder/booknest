@@ -91,4 +91,51 @@ if (contactForm) {
     contactForm.reset();
   });
 }
+// 3-кезең: Кітаптар кестесін бағандар бойынша сұрыптау
+  const booksTable = document.querySelector(".books-table");
+  const tableHeaders = booksTable ? Array.from(booksTable.querySelectorAll("thead th")) : [];
+  const tableBody = booksTable ? booksTable.querySelector("tbody") : null;
+
+  let sortColumnIndex = null;
+  let sortDirection = "asc";
+
+  const compareRows = (rowA, rowB, colIndex, direction) => {
+    const cellA = rowA.children[colIndex] ? rowA.children[colIndex].textContent.trim() : "";
+    const cellB = rowB.children[colIndex] ? rowB.children[colIndex].textContent.trim() : "";
+
+    const numA = Number(cellA.replace(/\s+/g, ""));
+    const numB = Number(cellB.replace(/\s+/g, ""));
+    const bothNumeric = cellA !== "" && cellB !== "" && !Number.isNaN(numA) && !Number.isNaN(numB);
+
+    let comparison = 0;
+    if (bothNumeric) {
+      comparison = numA - numB;
+    } else {
+      comparison = cellA.localeCompare(cellB, "kk", { sensitivity: "base" });
+    }
+
+    return direction === "asc" ? comparison : -comparison;
+  };
+
+  tableHeaders.forEach((th, index) => {
+    th.style.cursor = "pointer";
+    th.title = "Сұрыптау үшін басыңыз";
+
+    th.addEventListener("click", () => {
+      if (sortColumnIndex === index) {
+        sortDirection = sortDirection === "asc" ? "desc" : "asc";
+      } else {
+        sortColumnIndex = index;
+        sortDirection = "asc";
+      }
+
+      const sortedRows = [...tableRows].sort((a, b) =>
+        compareRows(a, b, index, sortDirection)
+      );
+
+      if (tableBody) {
+        sortedRows.forEach((row) => tableBody.appendChild(row));
+      }
+    });
+  });
 });
