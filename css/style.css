@@ -484,3 +484,16 @@ p { margin-bottom: 1rem; }
     transform: translateY(-3px);
   }
 }
+/* 3-кезең: Кестенің мобильді экранда ыңғайлы көлденең жылжуы */
+.table-wrapper {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.books-table {
+  width: 100%;
+  min-width: 520px;
+  border-collapse: collapse;
+}
