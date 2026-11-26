@@ -870,3 +870,44 @@ input:focus-visible {
     transition-duration: 0.01ms !important;
   }
 }
+/* Footer 3 бағанды тор және төменгі жолды реттеу */
+.site-footer .container {
+  max-width: 1140px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+.site-footer .footer-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 32px;
+  align-items: start;
+  padding-bottom: 28px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.site-footer .footer-grid > div {
+  min-width: 0;
+}
+
+.site-footer .footer-bottom {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  padding-top: 18px;
+  text-align: left;
+}
+
+@media (max-width: 768px) {
+  .site-footer .footer-grid {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+
+  .site-footer .footer-bottom {
+    justify-content: center;
+    text-align: center;
+  }
+}
