@@ -1,4 +1,41 @@
 // BookNest — 2-кезең: алғашқы JavaScript интерактивтілігі
+function addToCart(bookId) {
+  if (typeof booksData === "undefined") return;
+  const book = booksData.find((item) => item.id === Number(bookId));
+  if (!book) return;
+
+  const existing = cartItems.find((item) => item.id === book.id);
+  if (existing) {
+    existing.qty += 1;
+  } else {
+    cartItems.push({
+      id: book.id,
+      title: book.title,
+      price: book.price,
+      qty: 1
+    });
+  }
+
+  renderCartView(cartItems);
+}
+
+function updateCartQty(bookId, delta) {
+  const target = cartItems.find((item) => item.id === Number(bookId));
+  if (!target) return;
+
+  target.qty += delta;
+  if (target.qty <= 0) {
+    removeFromCart(bookId);
+    return;
+  }
+
+  renderCartView(cartItems);
+}
+
+function removeFromCart(bookId) {
+  cartItems = cartItems.filter((item) => item.id !== Number(bookId));
+  renderCartView(cartItems);
+}
 document.addEventListener("DOMContentLoaded", () => {
   const searchInput =
   document.getElementById("bookSearch") ||
@@ -180,4 +217,30 @@ if (searchInput && tableRows.length > 0) {
       contactForm.reset();
     });
   }
+  renderCartView(cartItems);
+
+  document.addEventListener("click", (event) => {
+    const addBtn = event.target.closest("[data-add-to-cart]");
+    if (addBtn) {
+      addToCart(addBtn.dataset.addToCart);
+      return;
+    }
+
+    const incBtn = event.target.closest(".cart-inc");
+    if (incBtn) {
+      updateCartQty(incBtn.dataset.id, 1);
+      return;
+    }
+
+    const decBtn = event.target.closest(".cart-dec");
+    if (decBtn) {
+      updateCartQty(decBtn.dataset.id, -1);
+      return;
+    }
+
+    const removeBtn = event.target.closest(".cart-remove");
+    if (removeBtn) {
+      removeFromCart(removeBtn.dataset.id);
+    }
+  });
 }); 

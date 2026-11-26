@@ -14,3 +14,5 @@ const booksData = [
   { id: 7, title: "Sapiens: Адамзаттың қысқаша тарихы", author: "Юваль Ной Харари", year: 2011, price: 6500 },
   { id: 8, title: "Қан мен тер", author: "Әбдіжәміл Нұрпейісов", year: 1961, price: 4900 }
 ];
+// js/data.js — Себет күйі
+let cartItems = [];

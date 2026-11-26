@@ -21,3 +21,35 @@ function setStatusMessage(el, text, type = "info") {
     el.style.color = "inherit";
   }
 }
+// js/ui.js — Себетті рендерлеу
+function renderCartView(items, listSelector = "#cartItems", totalSelector = "#cartTotal") {
+  const listEl = document.querySelector(listSelector);
+  const totalEl = document.querySelector(totalSelector);
+  if (!listEl || !totalEl) return;
+
+  if (!items.length) {
+    listEl.innerHTML = `<p class="cart-empty">Себет бос.</p>`;
+    totalEl.textContent = formatPriceKZT(0);
+    return;
+  }
+
+  listEl.innerHTML = items
+    .map(
+      (item) => `
+      <div class="cart-row" data-cart-id="${item.id}">
+        <span class="cart-title">${item.title}</span>
+        <span class="cart-price">${formatPriceKZT(item.price)}</span>
+        <div class="cart-qty-controls">
+          <button type="button" class="cart-dec" data-id="${item.id}">-</button>
+          <span class="cart-qty">${item.qty}</span>
+          <button type="button" class="cart-inc" data-id="${item.id}">+</button>
+        </div>
+        <button type="button" class="cart-remove" data-id="${item.id}">Жою</button>
+      </div>
+    `
+    )
+    .join("");
+
+  const totalAmount = items.reduce((sum, item) => sum + item.price * item.qty, 0);
+  totalEl.textContent = formatPriceKZT(totalAmount);
+}
