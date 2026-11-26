@@ -809,3 +809,41 @@ dialog.modal-box::backdrop {
 .footer-bottom p {
   margin-bottom: 0;
 }
+/* 47-тапсырма: Мобильді және планшет экрандарына бейімдеу */
+@media (max-width: 768px) {
+  .section {
+    padding: 36px 0;
+  }
+
+  .notice-banner,
+  .cta-box {
+    padding: 20px 16px;
+  }
+
+  .cta-form {
+    max-width: 100%;
+  }
+
+  .scroll-top-btn {
+    right: 14px;
+    bottom: 14px;
+    width: 40px;
+    height: 40px;
+    font-size: 1.1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .category-bar {
+    gap: 8px;
+  }
+
+  .category-chip {
+    padding: 6px 12px;
+    font-size: 0.85rem;
+  }
+
+  .footer-grid {
+    gap: 20px;
+  }
+}
