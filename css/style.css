@@ -459,3 +459,18 @@ p { margin-bottom: 1rem; }
   transform: translateY(-6px);
   box-shadow: 0 12px 24px rgba(0, 0, 0, 0.14);
 }
+/* 38-тапсырма: Қолдау және қолжетімділік бөлімі */
+.support-section {
+  background-color: var(--bg-surface);
+  border-top: 1px solid var(--border-color);
+  border-bottom: 1px solid var(--border-color);
+}
+
+.section-lead {
+  color: var(--text-muted);
+  margin-bottom: 24px;
+}
+
+.dark .support-section {
+  background-color: var(--bg-surface);
+}
