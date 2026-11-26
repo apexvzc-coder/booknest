@@ -474,3 +474,47 @@ p { margin-bottom: 1rem; }
 .dark .support-section {
   background-color: var(--bg-surface);
 }
+/* 39-тапсырма: Пікірлер бөлімі */
+.reviews-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 24px;
+}
+
+.review-card {
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 16px;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.review-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 22px rgba(0, 0, 0, 0.1);
+}
+
+.review-text {
+  color: var(--text-main);
+  font-style: italic;
+  margin-bottom: 0;
+}
+
+.review-author {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.review-author strong {
+  color: var(--primary-dark);
+}
+
+.review-author span {
+  color: var(--text-muted);
+  font-size: 0.9rem;
+}
