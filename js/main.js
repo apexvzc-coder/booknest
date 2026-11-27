@@ -1,26 +1,35 @@
-// BookNest — 2-кезең: алғашқы JavaScript интерактивтілігі
+// js/main.js — Негізгі интерактивті логика және себет
+function syncCart() {
+  if (typeof saveCartToStorage === "function") {
+    saveCartToStorage(cartItems);
+  }
+  if (typeof renderCartView === "function") {
+    renderCartView(cartItems);
+  }
+}
+
 function addToCart(bookId) {
-  if (typeof booksData === "undefined") return;
-  const book = booksData.find((item) => item.id === Number(bookId));
+  if (typeof booksData === "undefined" || typeof cartItems === "undefined") return;
+  const book = booksData.find((item) => Number(item.id) === Number(bookId));
   if (!book) return;
 
-  const existing = cartItems.find((item) => item.id === book.id);
+  const existing = cartItems.find((item) => Number(item.id) === Number(book.id));
   if (existing) {
     existing.qty += 1;
   } else {
     cartItems.push({
       id: book.id,
       title: book.title,
-      price: book.price,
+      price: Number(book.price),
       qty: 1
     });
   }
-
-  renderCartView(cartItems);
+  syncCart();
 }
 
 function updateCartQty(bookId, delta) {
-  const target = cartItems.find((item) => item.id === Number(bookId));
+  if (typeof cartItems === "undefined") return;
+  const target = cartItems.find((item) => Number(item.id) === Number(bookId));
   if (!target) return;
 
   target.qty += delta;
@@ -28,79 +37,109 @@ function updateCartQty(bookId, delta) {
     removeFromCart(bookId);
     return;
   }
-
-  renderCartView(cartItems);
+  syncCart();
 }
 
 function removeFromCart(bookId) {
-  cartItems = cartItems.filter((item) => item.id !== Number(bookId));
-  renderCartView(cartItems);
+  if (typeof cartItems === "undefined") return;
+  cartItems = cartItems.filter((item) => Number(item.id) !== Number(bookId));
+  syncCart();
 }
+
 document.addEventListener("DOMContentLoaded", () => {
+  const searchKey =
+    typeof STORAGE_KEYS !== "undefined" ? STORAGE_KEYS.searchQuery : "booknestSearchQuery";
+  const rulesKey =
+    typeof STORAGE_KEYS !== "undefined"
+      ? STORAGE_KEYS.clubRulesAccepted
+      : "booknestClubRulesAccepted";
+
+  // 1. Кітап кестесін іздеу
   const searchInput =
-  document.getElementById("bookSearch") ||
-  document.querySelector('input[type="search"]');
-const tableRows = Array.from(
-  document.querySelectorAll(".books-table tbody tr")
-);
+    document.getElementById("bookSearch") ||
+    document.querySelector('input[type="search"]');
+  const tableRows = Array.from(document.querySelectorAll(".books-table tbody tr"));
 
-if (searchInput && tableRows.length > 0) {
-  const emptyMessage = document.createElement("p");
-  emptyMessage.id = "emptySearchMessage";
-  emptyMessage.textContent = "Мұндай кітап табылмады.";
-  emptyMessage.style.display = "none";
-  emptyMessage.style.marginTop = "12px";
+  if (searchInput && tableRows.length > 0) {
+    const emptyMessage =
+      typeof createElementWithProps === "function"
+        ? createElementWithProps(
+            "p",
+            { id: "emptySearchMessage", textContent: "Мұндай кітап табылмады." },
+            { display: "none", marginTop: "12px" }
+          )
+        : document.createElement("p");
 
-  const tableWrapper = document.querySelector(".table-wrapper");
-  if (tableWrapper && !document.getElementById("emptySearchMessage")) {
-    tableWrapper.insertAdjacentElement("afterend", emptyMessage);
+    if (!emptyMessage.id) {
+      emptyMessage.id = "emptySearchMessage";
+      emptyMessage.textContent = "Мұндай кітап табылмады.";
+      emptyMessage.style.display = "none";
+      emptyMessage.style.marginTop = "12px";
+    }
+
+    const tableWrapper = document.querySelector(".table-wrapper");
+    if (tableWrapper && !document.getElementById("emptySearchMessage")) {
+      tableWrapper.insertAdjacentElement("afterend", emptyMessage);
+    }
+
+    const savedQuery = localStorage.getItem(searchKey);
+    if (savedQuery) {
+      searchInput.value = savedQuery;
+    }
+
+    const filterBooks = () => {
+      const query = searchInput.value.trim().toLowerCase();
+      localStorage.setItem(searchKey, searchInput.value);
+
+      let visibleCount = 0;
+      tableRows.forEach((row) => {
+        const matches = row.textContent.toLowerCase().includes(query);
+        row.style.display = matches ? "" : "none";
+        if (matches) visibleCount += 1;
+      });
+
+      if (!document.getElementById("clearSearchBtn")) {
+        const clearBtn =
+          typeof createElementWithProps === "function"
+            ? createElementWithProps(
+                "button",
+                { type: "button", id: "clearSearchBtn", textContent: "Тазарту" },
+                { marginTop: "8px", padding: "6px 12px", cursor: "pointer" }
+              )
+            : document.createElement("button");
+
+        if (!clearBtn.id) {
+          clearBtn.type = "button";
+          clearBtn.id = "clearSearchBtn";
+          clearBtn.textContent = "Тазарту";
+          clearBtn.style.marginTop = "8px";
+          clearBtn.style.padding = "6px 12px";
+          clearBtn.style.cursor = "pointer";
+        }
+
+        searchInput.insertAdjacentElement("afterend", clearBtn);
+
+        clearBtn.addEventListener("click", () => {
+          searchInput.value = "";
+          localStorage.removeItem(searchKey);
+          filterBooks();
+          searchInput.focus();
+        });
+      }
+
+      emptyMessage.style.display = visibleCount === 0 ? "block" : "none";
+    };
+
+    searchInput.addEventListener("input", filterBooks);
+    searchInput.addEventListener("keyup", filterBooks);
+    filterBooks();
   }
 
-  const savedQuery = localStorage.getItem("booknestSearchQuery");
-  if (savedQuery) {
-    searchInput.value = savedQuery;
-  }
-
-  const filterBooks = () => {
-    const query = searchInput.value.trim().toLowerCase();
-    localStorage.setItem("booknestSearchQuery", searchInput.value);
-
-    let visibleCount = 0;
-    tableRows.forEach((row) => {
-      const text = row.textContent.toLowerCase();
-      const matches = text.includes(query);
-      row.style.display = matches ? "" : "none";
-      if (matches) visibleCount += 1;
-    });
-    if (searchInput && !document.getElementById("clearSearchBtn")) {
-    const clearBtn = document.createElement("button");
-    clearBtn.type = "button";
-    clearBtn.id = "clearSearchBtn";
-    clearBtn.textContent = "Тазарту";
-    clearBtn.style.marginTop = "8px";
-    clearBtn.style.padding = "6px 12px";
-    clearBtn.style.cursor = "pointer";
-
-    searchInput.insertAdjacentElement("afterend", clearBtn);
-
-    clearBtn.addEventListener("click", () => {
-      searchInput.value = "";
-      localStorage.removeItem("booknestSearchQuery");
-      filterBooks();
-      searchInput.focus();
-    });
-  }
-
-    emptyMessage.style.display = visibleCount === 0 ? "block" : "none";
-  };
-
-  searchInput.addEventListener("input", filterBooks);
-  searchInput.addEventListener("keyup", filterBooks);
-  filterBooks();
-}
-// 3-кезең: Кітаптар кестесін бағандар бойынша сұрыптау
+  // 2. Кесте бағандарын сұрыптау
   const booksTable = document.querySelector(".books-table");
-  const tableHeaders = booksTable ? Array.from(booksTable.querySelectorAll("thead th")) : [];
+  const tableHeaders = booksTable
+    ? Array.from(booksTable.querySelectorAll("thead th"))
+    : [];
   const tableBody = booksTable ? booksTable.querySelector("tbody") : null;
 
   let sortColumnIndex = null;
@@ -112,14 +151,12 @@ if (searchInput && tableRows.length > 0) {
 
     const numA = Number(cellA.replace(/\s+/g, ""));
     const numB = Number(cellB.replace(/\s+/g, ""));
-    const bothNumeric = cellA !== "" && cellB !== "" && !Number.isNaN(numA) && !Number.isNaN(numB);
+    const bothNumeric =
+      cellA !== "" && cellB !== "" && !Number.isNaN(numA) && !Number.isNaN(numB);
 
-    let comparison = 0;
-    if (bothNumeric) {
-      comparison = numA - numB;
-    } else {
-      comparison = cellA.localeCompare(cellB, "kk", { sensitivity: "base" });
-    }
+    const comparison = bothNumeric
+      ? numA - numB
+      : cellA.localeCompare(cellB, "kk", { sensitivity: "base" });
 
     return direction === "asc" ? comparison : -comparison;
   };
@@ -127,7 +164,6 @@ if (searchInput && tableRows.length > 0) {
   tableHeaders.forEach((th, index) => {
     th.style.cursor = "pointer";
     th.title = "Сұрыптау үшін басыңыз";
-
     th.addEventListener("click", () => {
       if (sortColumnIndex === index) {
         sortDirection = sortDirection === "asc" ? "desc" : "asc";
@@ -145,7 +181,8 @@ if (searchInput && tableRows.length > 0) {
       }
     });
   });
-// 3-кезең: Оқу клубы бетінде қатысуға дайындықты белгілеу
+
+  // 3. Оқу клубы ережесін растау
   const rulesList = document.querySelector(".rules-list");
   if (rulesList && !document.getElementById("clubConfirmBtn")) {
     const confirmBtn = document.createElement("button");
@@ -161,19 +198,22 @@ if (searchInput && tableRows.length > 0) {
     statusMsg.style.marginTop = "10px";
     statusMsg.style.fontWeight = "600";
 
-    const isConfirmed = localStorage.getItem("booknestClubRulesAccepted") === "true";
-    if (isConfirmed) {
-      statusMsg.textContent = "Клуб ережесі расталды — сенбілік кездесуге дайынсыз!";
+    if (localStorage.getItem(rulesKey) === "true") {
+      statusMsg.textContent =
+        "Клуб ережесі расталды — сенбілік кездесуге дайынсыз!";
     }
 
     rulesList.insertAdjacentElement("afterend", confirmBtn);
     confirmBtn.insertAdjacentElement("afterend", statusMsg);
 
     confirmBtn.addEventListener("click", () => {
-      localStorage.setItem("booknestClubRulesAccepted", "true");
-      statusMsg.textContent = "Клуб ережесі расталды — сенбілік кездесуге дайынсыз!";
+      localStorage.setItem(rulesKey, "true");
+      statusMsg.textContent =
+        "Клуб ережесі расталды — сенбілік кездесуге дайынсыз!";
     });
   }
+
+  // 4. Байланыс формасы
   const contactForm = document.querySelector(".contact-form");
   if (contactForm) {
     let statusEl = document.getElementById("contactFormStatus");
@@ -205,19 +245,36 @@ if (searchInput && tableRows.length > 0) {
       const messageValue = messageInput ? messageInput.value.trim() : "";
 
       if (!nameValue || !emailValue || !topicValue || !messageValue) {
-        statusEl.textContent = "Барлық міндетті өрісті толтырып, тақырыпты таңдаңыз.";
-        statusEl.style.backgroundColor = "#fdecea";
-        statusEl.style.color = "#8a1c1c";
+        if (typeof setStatusMessage === "function") {
+          setStatusMessage(
+            statusEl,
+            "Барлық міндетті өрісті толтырып, тақырыпты таңдаңыз.",
+            "error"
+          );
+        } else {
+          statusEl.textContent =
+            "Барлық міндетті өрісті толтырып, тақырыпты таңдаңыз.";
+        }
         return;
       }
 
-      statusEl.textContent = `${nameValue}, «${topicLabel}» бойынша хабарламаңыз қабылданды (${emailValue}). Жақын арада хабарласамыз!`;
-      statusEl.style.backgroundColor = "#eef4f0";
-      statusEl.style.color = "#1f4d36";
+      if (typeof setStatusMessage === "function") {
+        setStatusMessage(
+          statusEl,
+          `${nameValue}, «${topicLabel}» бойынша хабарламаңыз қабылданды (${emailValue}). Жақын арада хабарласамыз!`,
+          "success"
+        );
+      } else {
+        statusEl.textContent = `${nameValue}, «${topicLabel}» бойынша хабарламаңыз қабылданды (${emailValue}). Жақын арада хабарласамыз!`;
+      }
       contactForm.reset();
     });
   }
-  renderCartView(cartItems);
+
+  // 5. Себетті бастапқы рендерлеу және оқиғалар
+  if (typeof renderCartView === "function" && typeof cartItems !== "undefined") {
+    renderCartView(cartItems);
+  }
 
   document.addEventListener("click", (event) => {
     const addBtn = event.target.closest("[data-add-to-cart]");
@@ -243,4 +300,4 @@ if (searchInput && tableRows.length > 0) {
       removeFromCart(removeBtn.dataset.id);
     }
   });
-}); 
+});
