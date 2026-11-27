@@ -114,19 +114,12 @@
         </tbody>
       </table>
     </div>
-    <section id="cart-section" class="cart-box">
-  <h2>Себет</h2>
-  <div id="cartItems"></div>
-  <p class="cart-total-row">Жалпы сома: <strong id="cartTotal">0 ₸</strong></p>
-</section>
+    <section id="cartSection" class="contact-card">
+    <h2>Себет</h2>
+    <div id="cartItems"></div>
+    <p class="price-tag">Жалпы сома: <strong id="cartTotal">0 ₸</strong></p>
+  </section>
 </main>
-      <section id="cart-section" class="cart-box">
-  <h2>Себет</h2>
-  <div id="cartItems"></div>
-  <p class="cart-total-row">Жалпы сома: <strong id="cartTotal">0 ₸</strong></p>
-</section>
-    </div>
-  </main>
 
   <footer class="site-footer">
     <div class="container footer-grid">
@@ -159,5 +152,19 @@
   <script src="js/main.js"></script>
   <script src="js/data.js" defer></script>
   <script src="js/ui.js" defer></script>
+  <div id="cartBackdrop" class="cart-backdrop" hidden></div>
+
+  <aside id="cartDrawer" class="cart-drawer" aria-label="Себет панелі" aria-hidden="true">
+    <div class="cart-drawer-header">
+      <h2>Себет</h2>
+      <button type="button" id="cartCloseBtn" class="modal-close" aria-label="Себетті жабу">✕</button>
+    </div>
+
+    <div id="cartDrawerItems"></div>
+
+    <div class="cart-drawer-footer">
+      <p class="price-tag">Жалпы сома: <strong id="cartDrawerTotal">0 ₸</strong></p>
+    </div>
+  </aside>
 </body>
 </html>
