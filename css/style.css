@@ -961,32 +961,47 @@ input:focus-visible {
   padding-top: 14px;
 }
 body.dark-theme {
-  background-color: #121212;
-  color: #f3f4f6;
+  background-color: #090d16;
+  color: #e2e8f0;
 }
 
 body.dark-theme .site-header,
+body.dark-theme .site-footer,
 body.dark-theme .cart-drawer {
-  background-color: #1e1e1e;
-  color: #f3f4f6;
-}
-body.dark-theme {
-  background-color: #121212;
-  color: #f3f4f6;
+  background-color: #0d1526;
+  color: #e2e8f0;
+  border-color: #1e293b;
 }
 
-body.dark-theme .site-header,
-body.dark-theme .cart-drawer,
-body.dark-theme section {
-  background-color: #18181b;
-  color: #f3f4f6;
+body.dark-theme section,
+body.dark-theme .book-card,
+body.dark-theme .card,
+body.dark-theme .feature-card,
+body.dark-theme .category-chip,
+body.dark-theme table,
+body.dark-theme th,
+body.dark-theme td,
+body.dark-theme input,
+body.dark-theme textarea,
+body.dark-theme select {
+  background-color: #111c33;
+  color: #e2e8f0;
+  border-color: #1e3a5f;
 }
 
 body.dark-theme a {
-  color: #e5e7eb;
+  color: #93c5fd;
 }
 
-body.dark-theme .book-card {
-  background-color: #ffffff;
-  color: #111827;
+body.dark-theme .btn,
+body.dark-theme button:not(.theme-toggle) {
+  background-color: #172554;
+  color: #eff6ff;
+  border-color: #2563eb;
+}
+
+body.dark-theme .theme-toggle {
+  background-color: #111c33;
+  color: #93c5fd;
+  border-color: #2563eb;
 }
