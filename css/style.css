@@ -960,3 +960,13 @@ input:focus-visible {
   border-top: 1px solid rgba(0, 0, 0, 0.12);
   padding-top: 14px;
 }
+body.dark-theme {
+  background-color: #121212;
+  color: #f3f4f6;
+}
+
+body.dark-theme .site-header,
+body.dark-theme .cart-drawer {
+  background-color: #1e1e1e;
+  color: #f3f4f6;
+}

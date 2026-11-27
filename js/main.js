@@ -335,4 +335,26 @@ document.addEventListener("DOMContentLoaded", () => {
       setCartDrawerOpen(false);
     }
   });
+  const themeToggleBtn = document.getElementById("themeToggleBtn");
+  const THEME_STORAGE_KEY = "booknestTheme";
+
+  function applyTheme(theme) {
+    const isDark = theme === "dark";
+    document.body.classList.toggle("dark-theme", isDark);
+    if (themeToggleBtn) {
+      themeToggleBtn.textContent = isDark ? "☀️" : "🌙";
+      themeToggleBtn.setAttribute("aria-pressed", String(isDark));
+    }
+  }
+
+  const savedTheme = localStorage.getItem(THEME_STORAGE_KEY) || "light";
+  applyTheme(savedTheme);
+
+  if (themeToggleBtn) {
+    themeToggleBtn.addEventListener("click", () => {
+      const nextTheme = document.body.classList.contains("dark-theme") ? "light" : "dark";
+      localStorage.setItem(THEME_STORAGE_KEY, nextTheme);
+      applyTheme(nextTheme);
+    });
+  }
 });
