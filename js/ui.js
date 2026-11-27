@@ -21,7 +21,10 @@ function setStatusMessage(el, text, type = "info") {
     el.style.color = "inherit";
   }
 }
-// js/ui.js — Себетті рендерлеу
+// js/ui.js — Себетті рендерле
+function formatPriceKZT(amount) {
+  return `${Number(amount || 0).toLocaleString("kk-KZ")} ₸`;
+}
 function renderCartView(items, listSelector = "#cartItems", totalSelector = "#cartTotal") {
   const listEl = document.querySelector(listSelector);
   const totalEl = document.querySelector(totalSelector);
