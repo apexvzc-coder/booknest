@@ -970,3 +970,23 @@ body.dark-theme .cart-drawer {
   background-color: #1e1e1e;
   color: #f3f4f6;
 }
+body.dark-theme {
+  background-color: #121212;
+  color: #f3f4f6;
+}
+
+body.dark-theme .site-header,
+body.dark-theme .cart-drawer,
+body.dark-theme section {
+  background-color: #18181b;
+  color: #f3f4f6;
+}
+
+body.dark-theme a {
+  color: #e5e7eb;
+}
+
+body.dark-theme .book-card {
+  background-color: #ffffff;
+  color: #111827;
+}
