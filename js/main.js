@@ -275,31 +275,8 @@ document.addEventListener("DOMContentLoaded", () => {
   if (typeof renderCartView === "function" && typeof cartItems !== "undefined") {
     renderCartView(cartItems);
   }
-
-  document.addEventListener("click", (event) => {
-    const addBtn = event.target.closest("[data-add-to-cart]");
-    if (addBtn) {
-      addToCart(addBtn.dataset.addToCart);
-      return;
     }
-
-    const incBtn = event.target.closest(".cart-inc");
-    if (incBtn) {
-      updateCartQty(incBtn.dataset.id, 1);
-      return;
-    }
-
-    const decBtn = event.target.closest(".cart-dec");
-    if (decBtn) {
-      updateCartQty(decBtn.dataset.id, -1);
-      return;
-    }
-
-    const removeBtn = event.target.closest(".cart-remove");
-    if (removeBtn) {
-      removeFromCart(removeBtn.dataset.id);
-    }
-  });
+  );
   const cartDrawer = document.getElementById("cartDrawer");
   const cartBackdrop = document.getElementById("cartBackdrop");
   const cartToggleBtn = document.getElementById("cartToggleBtn");
@@ -493,4 +470,3 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   syncCartUI();
-});
