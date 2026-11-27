@@ -357,4 +357,140 @@ document.addEventListener("DOMContentLoaded", () => {
       applyTheme(nextTheme);
     });
   }
+  const CART_STORAGE_KEY = "booknest_cart_v1";
+
+  function readCart() {
+    try {
+      const raw = localStorage.getItem(CART_STORAGE_KEY);
+      const parsed = raw ? JSON.parse(raw) : [];
+      return Array.isArray(parsed) ? parsed : [];
+    } catch {
+      return [];
+    }
+  }
+
+  function writeCart(items) {
+    localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(items));
+  }
+
+  function formatKZT(amount) {
+    return `${Number(amount || 0).toLocaleString("ru-RU").replace(/,/g, " ")} ₸`;
+  }
+
+  function syncCartUI() {
+    const items = readCart();
+    const totalQty = items.reduce((sum, item) => sum + Number(item.qty || 0), 0);
+    const totalPrice = items.reduce((sum, item) => sum + Number(item.price || 0) * Number(item.qty || 0), 0);
+
+    const badge = document.getElementById("cartBadgeCount");
+    if (badge) {
+      badge.textContent = String(totalQty);
+    }
+
+    const drawerTotal = document.getElementById("cartDrawerTotal");
+    if (drawerTotal) {
+      drawerTotal.textContent = formatKZT(totalPrice);
+    }
+
+    const drawerItems = document.getElementById("cartDrawerItems");
+    if (drawerItems) {
+      if (items.length === 0) {
+        drawerItems.innerHTML = `<p>Себет бос</p>`;
+      } else {
+        drawerItems.innerHTML = items
+          .map(
+            (item) => `
+          <div class="cart-drawer-item" data-id="${item.id}">
+            <div>
+              <strong>${item.title}</strong>
+              <div>${formatKZT(item.price)} × ${item.qty}</div>
+            </div>
+            <div>
+              <button type="button" class="cart-qty-dec" data-id="${item.id}">-</button>
+              <span>${item.qty}</span>
+              <button type="button" class="cart-qty-inc" data-id="${item.id}">+</button>
+              <button type="button" class="cart-item-remove" data-id="${item.id}">Жою</button>
+            </div>
+          </div>
+        `
+          )
+          .join("");
+      }
+    }
+  }
+
+  function parsePriceFromText(text) {
+    const digits = String(text || "").replace(/[^\d]/g, "");
+    return Number(digits || 0);
+  }
+
+  document.addEventListener("click", (event) => {
+    const addBtn = event.target.closest("[data-add-to-cart]");
+    if (addBtn) {
+      const id = String(addBtn.dataset.addToCart || addBtn.dataset.id || "").trim();
+      const row = addBtn.closest("tr, .book-card, article, .card");
+      const cells = row ? [...row.querySelectorAll("td")] : [];
+
+      const title =
+        addBtn.dataset.title ||
+        row?.querySelector("h2, h3, .book-title")?.textContent?.trim() ||
+        cells[0]?.textContent?.trim() ||
+        `Кітап #${id}`;
+
+      const priceText =
+        addBtn.dataset.price ||
+        row?.querySelector(".price-tag, .book-price")?.textContent ||
+        cells.find((td) => td.textContent.includes("₸"))?.textContent ||
+        "0";
+
+      const price = parsePriceFromText(priceText);
+      if (!id) return;
+
+      const items = readCart();
+      const existing = items.find((item) => String(item.id) === id);
+      if (existing) {
+        existing.qty = Number(existing.qty || 0) + 1;
+        if (price > 0) existing.price = price;
+        if (title) existing.title = title;
+      } else {
+        items.push({ id, title, price, qty: 1 });
+      }
+
+      writeCart(items);
+      syncCartUI();
+      return;
+    }
+
+    const incBtn = event.target.closest(".cart-qty-inc");
+    if (incBtn) {
+      const id = String(incBtn.dataset.id || "");
+      const items = readCart().map((item) =>
+        String(item.id) === id ? { ...item, qty: Number(item.qty || 0) + 1 } : item
+      );
+      writeCart(items);
+      syncCartUI();
+      return;
+    }
+
+    const decBtn = event.target.closest(".cart-qty-dec");
+    if (decBtn) {
+      const id = String(decBtn.dataset.id || "");
+      const items = readCart()
+        .map((item) => (String(item.id) === id ? { ...item, qty: Number(item.qty || 0) - 1 } : item))
+        .filter((item) => Number(item.qty || 0) > 0);
+      writeCart(items);
+      syncCartUI();
+      return;
+    }
+
+    const removeBtn = event.target.closest(".cart-item-remove");
+    if (removeBtn) {
+      const id = String(removeBtn.dataset.id || "");
+      const items = readCart().filter((item) => String(item.id) !== id);
+      writeCart(items);
+      syncCartUI();
+    }
+  });
+
+  syncCartUI();
 });
