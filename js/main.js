@@ -300,4 +300,39 @@ document.addEventListener("DOMContentLoaded", () => {
       removeFromCart(removeBtn.dataset.id);
     }
   });
+  const cartDrawer = document.getElementById("cartDrawer");
+  const cartBackdrop = document.getElementById("cartBackdrop");
+  const cartToggleBtn = document.getElementById("cartToggleBtn");
+  const cartCloseBtn = document.getElementById("cartCloseBtn");
+
+  function setCartDrawerOpen(isOpen) {
+    if (!cartDrawer || !cartBackdrop) return;
+    cartDrawer.classList.toggle("open", isOpen);
+    cartDrawer.setAttribute("aria-hidden", String(!isOpen));
+    cartBackdrop.hidden = !isOpen;
+    if (cartToggleBtn) {
+      cartToggleBtn.setAttribute("aria-expanded", String(isOpen));
+    }
+  }
+
+  if (cartToggleBtn) {
+    cartToggleBtn.addEventListener("click", () => {
+      const nextState = cartDrawer ? !cartDrawer.classList.contains("open") : true;
+      setCartDrawerOpen(nextState);
+    });
+  }
+
+  if (cartCloseBtn) {
+    cartCloseBtn.addEventListener("click", () => setCartDrawerOpen(false));
+  }
+
+  if (cartBackdrop) {
+    cartBackdrop.addEventListener("click", () => setCartDrawerOpen(false));
+  }
+
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape") {
+      setCartDrawerOpen(false);
+    }
+  });
 });
